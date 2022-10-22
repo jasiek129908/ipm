@@ -1,8 +1,17 @@
-{\rtf1}<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+	<style>
+	input:not(:focus):not(:placeholder-shown):invalid {
+		border-color: red;
+	}
+	
+	input:not(:focus):not(:placeholder-shown):valid {
+		border-color: green;
+	}
+	</style>
 </head>
 
 <body>
@@ -52,36 +61,10 @@
 	</div>
 	
 	<div>
-		<button onClick="sprawdzPoprawnosc()">Sprawdź poprawność</button>
-	</div>
-	<div>
 		<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>
 	</div>
 	
 	<script>
-	
-		function sprawdzPoprawnosc(){
-			formInputs = new Array(document.getElementById("email"),
-			document.getElementById("kod_pocztowy"),
-			document.getElementById("numer_nip"),
-			document.getElementById("numer_dowodu"),
-			document.getElementById("ipv4"),
-			document.getElementById("www"), 
-			document.getElementById("sciezka_plik"), 
-			document.getElementById("sciezka_plik_wielkosc"),
-			document.getElementById("sciezka_do_katalogu"), 
-			document.getElementById("ipv6"), 
-			document.getElementById("numer_telefonu"));
-			
-            for (input of formInputs){
-				if (!input.checkValidity()) {
-                    input.style.border = "1px solid red";
-                }
-                else {
-                    input.style.border = "1px solid green";
-                }
-            }
-		}
 		
 		function wypelnijDane(){
 			document.getElementById("email").value = "jan@example.com";
