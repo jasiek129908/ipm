@@ -69,10 +69,25 @@
 	</div>
 	
 	<div>
-		<input id="kalendarz" onclick="spradz_czy_pracujacy_dzien()" type="date">
+		<input id="kalendarz" type="date">
 	</div>
 	
+	<div>
+		<input type="time">
+	</div>
+
 	<script>
+	
+		const kalendarz = document.getElementById("kalendarz");
+		kalendarz.addEventListener("input", function(e){
+			  var day = new Date(this.value).getUTCDay();
+			  console.log(day);
+			  let sobota=6, niedziela=0;
+			  if([sobota,niedziela].includes(day)){
+				e.preventDefault();
+				this.value = '';
+			  }
+		});
 		
 		function wypelnijDane(){
 			document.getElementById("email").value = "jan@example.com";
@@ -88,11 +103,6 @@
 			document.getElementById("numer_telefonu").value= "123456789";
 		}
 		
-		function spradz_czy_pracujacy_dzien(){
-			console.log("1");
-			let kalendarz = document.getElementById('kalendarz');
-			
-		}
 	</script>
 </body>
 </html>
