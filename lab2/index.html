@@ -65,7 +65,7 @@
 	</div>
 	
 	<div>
-		<input type="date">
+		<input id="date" type="date">
 	</div>
 	
 	<div>
@@ -73,11 +73,15 @@
 	</div>
 	
 	<div>
-		<input type="time">
+		<input id="time24" type="time">
 	</div>
 
 	<div>
-		<input type="color">
+		<input type="text" min="00:00" max="11:59">
+	</div>
+	
+	<div>
+		<input id="kolor" type="color">
 	</div>
 
 	<script>
@@ -105,6 +109,14 @@
 			document.getElementById("sciezka_do_katalogu").value= "/etc/hosts";
 			document.getElementById("ipv6").value= "2001:0db8:0000:85a3:0000:0000:ac1f:8001";
 			document.getElementById("numer_telefonu").value= "123456789";
+			document.getElementById("date").valueAsDate = new Date();
+			document.getElementById("kalendarz").valueAsDate = new Date(2022,10,22);
+			
+			let date = new Date();
+            var czas = date.toISOString().substring(11,16);
+			document.getElementById("time24").value = czas;
+			document.getElementById("kolor").value = "#f6b73c";
+			
 		}
 		
 	</script>
