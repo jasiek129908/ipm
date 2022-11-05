@@ -9,14 +9,26 @@
 </head>
 	
 <body>
-
-	<ol id="list">
-		<li class="draggable">A</div>
-		<li class="draggable">B</div>
-		<li class="draggable">C</div>
-		<li class="draggable">D</div>
-		<li class="draggable">E</div>
+	<ol class="list">
+	  <li draggable="true" class="element">A</div>
+	  <li draggable="true" class="element">B</div>
+	  <li draggable="true" class="element">C</div>
 	</ol>
+	
+	
+	<script>
+		  
+		let items = document.querySelectorAll('.list .element');
+		  items.forEach(function(item) {
+			item.addEventListener('dragstart', dragStart);
+			item.addEventListener('dragenter', dragEnter);
+			item.addEventListener('dragover', dragOver);
+			item.addEventListener('dragleave', dragLeave);
+			item.addEventListener('drop', drop);
+			item.addEventListener('dragend', dragEnd);
+		  });
+		  
+	</script>
 </div>
 
 </body>
