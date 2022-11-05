@@ -21,34 +21,62 @@
 	</div>
 
 	<script>
-		let focusedElement = null;
+		var focusedElement = null;
 		
 		   function dragStart(e) {
 			focusedElement = this;
 			
-			//The DataTransfer.effectAllowed property specifies the effect that is allowed for a drag operation
-			e.dataTransfer.effectAllowed = 'move';
-			//The DataTransfer.setData() method sets the drag operation's drag data to the specified data and type
-			e.dataTransfer.setData('text/html', this.innerHTML);
-		  }
-
-		  function dragEnter(e) {
-			if (e.preventDefault) {
-			  e.preventDefault();
+				//The DataTransfer.effectAllowed property specifies the effect that is allowed for a drag operation
+				e.dataTransfer.effectAllowed = 'move';
+				//The DataTransfer.setData() method sets the drag operation's drag data to the specified data and type
+				e.dataTransfer.setData('text/html', this.innerHTML);
 			}
 			
-			e.dataTransfer.dropEffect = 'move';
-			return false;
-		  }
+			function dragOver(e) {
+				if (e.preventDefault) {
+				  e.preventDefault();
+				}
 
-		let items = document.querySelectorAll('.list .element');
+				e.dataTransfer.dropEffect = 'move';
+			}
+			
+			function dragEnter(e) {
+				this.classList.add('over');
+			}
+
+			function dragLeave(e) {
+				this.classList.remove('over');
+			}
+			
+			function drop(e) {
+				if (e.stopPropagation) {
+				  e.stopPropagation(); 
+				}
+				
+				if (focusedElement != this) {
+				  focusedElement.innerHTML = this.innerHTML;
+				  this.innerHTML = e.dataTransfer.getData('text/html');
+				}
+			   
+			}
+			
+			function dragEnd(e) {
+				this.style.opacity = '1';
+				
+				items.forEach(function (item) {
+				  item.classList.remove('over');
+				});
+			}
+  
+			
+		var items = document.querySelectorAll('.list .element');
 		  items.forEach(function(item) {
 			item.addEventListener('dragstart', dragStart);
 			item.addEventListener('dragenter', dragEnter);
-			//item.addEventListener('dragover', dragOver);
-			//item.addEventListener('dragleave', dragLeave);
-			//item.addEventListener('drop', drop);
-			//item.addEventListener('dragend', dragEnd);
+			item.addEventListener('drop', drop);
+			item.addEventListener('dragend', dragEnd);
+			item.addEventListener('dragover', dragOver);
+			item.addEventListener('dragleave', dragLeave);
 		  });
 		  
 	</script>
