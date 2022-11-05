@@ -20,18 +20,35 @@
 		</ol>
 	</div>
 
-	
-	
 	<script>
-		  
+		let focusedElement = null;
+		
+		   function dragStart(e) {
+			focusedElement = this;
+			
+			//The DataTransfer.effectAllowed property specifies the effect that is allowed for a drag operation
+			e.dataTransfer.effectAllowed = 'move';
+			//The DataTransfer.setData() method sets the drag operation's drag data to the specified data and type
+			e.dataTransfer.setData('text/html', this.innerHTML);
+		  }
+
+		  function dragEnter(e) {
+			if (e.preventDefault) {
+			  e.preventDefault();
+			}
+			
+			e.dataTransfer.dropEffect = 'move';
+			return false;
+		  }
+
 		let items = document.querySelectorAll('.list .element');
 		  items.forEach(function(item) {
 			item.addEventListener('dragstart', dragStart);
 			item.addEventListener('dragenter', dragEnter);
-			item.addEventListener('dragover', dragOver);
-			item.addEventListener('dragleave', dragLeave);
-			item.addEventListener('drop', drop);
-			item.addEventListener('dragend', dragEnd);
+			//item.addEventListener('dragover', dragOver);
+			//item.addEventListener('dragleave', dragLeave);
+			//item.addEventListener('drop', drop);
+			//item.addEventListener('dragend', dragEnd);
 		  });
 		  
 	</script>
