@@ -4,29 +4,82 @@
 <head>
     <meta charset="UTF-8">
 	<style>
+	
+		html, body {
+		  height: 100%;
+		  width: 100%;
+		  margin: 0;
+		}
+		
 		.list .element{
-		margin-top: 2px;
+			margin-top: 2px;
 			border: 4px dotted;
+		}
+		
+		.container{
+			display: flex;
+			flex-flow: column;
+			height: 100%;
+			width: 100%;
+		}
+		
+		.container2{
+			display:flex;
+			flex-flow: column;
+			align-items: center;
+		    justify-content: center;
+			margin: 0 15%;
+			height: 100%;
+		}
+		
+		.platform{
+			width:100%;
+			height: 80%;
+			background-color: yellow;
+			
+		}
+		
+		.button{
+			display: flex;
+		    align-items: center;
+		    justify-content: center;
+			height: 20%;
+			background-color: green;
+			width:100%;
+		}
+		
+		.generateBlock{
+			position: absolute;
+			height: 30px;
+			width: 30px;
+			background-color:pink;
 		}
 	</style>
 </head>
 	
 <body>
-	<div style="width:30%;background-color:#9bb3a2">
-		<ol class="list">
-		  <li contenteditable="true" draggable="true" class="element">A</li>
-		  <li contenteditable="true" draggable="true" class="element">B</li>
-		  <li contenteditable="true" draggable="true" class="element">C</li>
-		</ol>
-	</div>
-	<div>
-		<div class="platform" style="">
-		
+	<div class="container">
+	
+		<div style="width:30%;background-color:#9bb3a2">
+			<ol class="list">
+			  <li contenteditable="true" draggable="true" class="element">A</li>
+			  <li contenteditable="true" draggable="true" class="element">B</li>
+			  <li contenteditable="true" draggable="true" class="element">C</li>
+			</ol>
 		</div>
 		
-		<div class="button" style="">
-		
+		<div class="container2" id="container2">
+			<div class="platform" id="platform">
+				
+			</div>
+				
+			<div class="button">
+				<button id="generateButton">Generuj klocek</button>
+				<div id="placeForNewBlock">
+				</div>
+			</div>
 		</div>
+		
 	</div>
 
 	<script>
@@ -87,6 +140,59 @@
 			item.addEventListener('dragover', dragOver);
 			item.addEventListener('dragleave', dragLeave);
 		  });
+		  
+		  
+		  
+		var generateButton = document.getElementById('generateButton');
+		var placeForNewBlock = document.getElementById('placeForNewBlock');
+		var platform = document.getElementById('platform');
+		var generatedBlocks = new Array();
+		var currentNode = null;
+		
+		generateButton.addEventListener("click", generateNewBlock);
+		
+		function dragStart2(event) {
+			console.log(currentNode);
+			currentNode = generatedBlocks.at(event.target.id);
+			console.log(currentNode);
+			event.dataTransfer.effectAllowed = 'move';
+			event.dataTransfer.setData('text/html', this.innerHTML);
+		} 
+		
+		function dragOver2(event) { 
+			event.preventDefault(); 
+			return false; 
+		}
+		
+		function drop2(event) { 
+			let e = window.event;
+			let posX = e.clientX;
+			let posY = e.clientY;
+			currentNode.style.left = posX+'px';
+			currentNode.style.top = posY+'px';
+			event.preventDefault();
+			currentNode = null;
+			return false;
+		}
+		
+		platform.addEventListener('dragover',dragOver2,false); 
+		platform.addEventListener('drop',drop2,false); 
+		
+		function generateNewBlock() {
+			console.log(generatedBlocks);
+			let newNode = document.createElement('div');
+			currentNode = newNode;
+			
+            newNode.className = 'generateBlock';
+			newNode.id = generatedBlocks.length;
+			newNode.style.backgroundColor  = "#" + ((1<<24)*Math.random() | 0).toString(16);
+			newNode.setAttribute("contenteditable","true");
+			newNode.setAttribute("draggable","true");
+			newNode.addEventListener("dragstart",dragStart2,false); 
+
+			placeForNewBlock.appendChild(newNode);
+			generatedBlocks.push(newNode);
+		}
 		  
 	</script>
 </div>
