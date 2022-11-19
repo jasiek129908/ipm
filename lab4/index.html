@@ -6,10 +6,10 @@
 	<body>
 	<script src="https://cdn.jsdelivr.net/npm/idb@3.0.2/build/idb.min.js"></script>
 
-<button onclick="addBook()">Add a book</button>
-<button onclick="clearBooks()">Clear books</button>
+<button onclick="addBook()">Dodaj kontrachenta</button>
 
-<p>Books list:</p>
+
+<p>Kontrachenci:</p>
 
 <ul id="listElem"></ul>
 
@@ -20,10 +20,7 @@
 
 		async function init() {
 		  db = await idb.openDb('clientDb', 1, db => {
-			db.createObjectStore('client', {keyPath: 'isbn'});
-			db.createIndex("by_name", "name");
-			db.createIndex("by_phone", "phone");
-			db.createIndex("by_addresss", "addresss");
+			clientObject = db.createObjectStore('client', {keyPath: 'name'});
 		  });
 
 		  list();
@@ -46,16 +43,12 @@
 
 		}
 
-		function clearBooks() {
-		  let tx = db.transaction('books', 'readwrite');
-		   tx.objectStore('books').clear();
-		   list();
-		}
+	
 
 		 function addBook() {
 		  let name = prompt("Client name?");
-		  let phone = +prompt("Client phone?");
-		  let adress = +prompt("Client addresss?");
+		  let phone = prompt("Client phone?");
+		  let adress = prompt("Client addresss?");
 			
 		  let tx = db.transaction('client', 'readwrite');
 
