@@ -4,8 +4,7 @@
 		<meta charset="UTF-8">
 	</head>
 	<body>
-	<script src="https://cdn.jsdelivr.net/npm/idb@3.0.2/build/idb.min.js"></script>
-
+	
 	<div>
 		<label for="name">adres email</label>
 		<input id="name" placeholder="jan kowalski" type="text" required>
@@ -45,32 +44,31 @@
 <ul id="listElem"></ul>
 
 <script>
-		let db;
+		var db;
+        const request = indexedDB.open('database12');
+        request.onsuccess = function (event) {
+            db = request.result;
+        };
 
-		init();
-
-		async function init() {
-		  db = await idb.openDb('database2', 1, db => {
-			clientObject = db.createObjectStore('client',{autoIncrement: true});
-		  });
-
-		  list();
-		}
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            let store = db.createObjectStore('client', {autoIncrement: true});
+        };
 	
 		async function list() {
 		  let tx = db.transaction('client');
 		  let clientStore = tx.objectStore('client');
 
-		  let clients = await clientStore.getAll();
-
-		  if (clients.length) {
-			listElem.innerHTML = clients.map(client => `<li>
-				imie: ${client.name}, email: ${client.email}, kod_pocztowy: ${client.kod_pocztowy} , numer nip: ${client.numer_nip}, numer dowodu: ${client.numer_dowodu},  number telefonu: ${client.numer_telefonu}
-			  </li>`).join('');
-		  } else {
-			listElem.innerHTML = '<li>Brak kontrachentow</li>'
-		  }
-
+		  clientStore.getAll().onsuccess = function(event) {
+		  console.log(event.target.result)
+				if (event.target.result.length) {
+				listElem.innerHTML = event.target.result.map(client => `<li>
+					imie: ${client.name}, email: ${client.email}, kod_pocztowy: ${client.kod_pocztowy} , numer nip: ${client.numer_nip}, numer dowodu: ${client.numer_dowodu},  number telefonu: ${client.numer_telefonu}
+				  </li>`).join('');
+			  } else {
+				listElem.innerHTML = '<li>Brak kontrachentow</li>'
+			  }
+			};
 
 		}
 
@@ -127,7 +125,7 @@
 						numer_dowodu:document.getElementById("numer_dowodu").value,
 						numer_telefonu:document.getElementById("numer_telefonu").value
 					});
-
+				console.log("dodalem");
 			 list();
 		  } catch(err) {
 			if (err.name == 'ConstraintError') {
