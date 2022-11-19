@@ -6,8 +6,8 @@
 	<body>
 	<script src="https://cdn.jsdelivr.net/npm/idb@3.0.2/build/idb.min.js"></script>
 
-<button onclick="addBook()">Dodaj kontrachenta</button>
-
+<button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
+<button onclick="usunKontrachentow()">Clear books</button>
 
 <p>Kontrachenci:</p>
 
@@ -19,7 +19,7 @@
 		init();
 
 		async function init() {
-		  db = await idb.openDb('clientDb', 1, db => {
+		  db = await idb.openDb('clientDb1', 1, db => {
 			clientObject = db.createObjectStore('client', {keyPath: 'name'});
 		  });
 
@@ -34,7 +34,7 @@
 
 		  if (clients.length) {
 			listElem.innerHTML = clients.map(client => `<li>
-				name: ${client.name}, price: ${client.phone} , price: ${client.addresss}
+				name: ${client.name}, price: ${client.phone} , price: ${client.address}
 			  </li>`).join('');
 		  } else {
 			listElem.innerHTML = '<li>No clients yet. Please add clients.</li>'
@@ -43,17 +43,21 @@
 
 		}
 
-	
+		async function usunKontrachentow() {
+		  let tx = db.transaction('client', 'readwrite');
+		  await tx.objectStore('client').clear();
+		  await list();
+		}
 
-		 function addBook() {
+		 function dodajKontrachenta() {
 		  let name = prompt("Client name?");
 		  let phone = prompt("Client phone?");
-		  let adress = prompt("Client addresss?");
+		  let address = prompt("Client addresss?");
 			
 		  let tx = db.transaction('client', 'readwrite');
 
 		  try {
-			 tx.objectStore('client').add({name, phone, adress});
+			 tx.objectStore('client').add({name, phone, address});
 			 list();
 		  } catch(err) {
 			if (err.name == 'ConstraintError') {
