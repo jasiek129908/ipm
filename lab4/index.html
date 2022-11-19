@@ -19,44 +19,48 @@
 		init();
 
 		async function init() {
-		  db = await idb.openDb('booksDb', 1, db => {
-			db.createObjectStore('books', {keyPath: 'name'});
+		  db = await idb.openDb('clientDb', 1, db => {
+			db.createObjectStore('client', {keyPath: 'isbn'});
+			db.createIndex("by_name", "name");
+			db.createIndex("by_phone", "phone");
+			db.createIndex("by_addresss", "addresss");
 		  });
 
 		  list();
 		}
 
 		async function list() {
-		  let tx = db.transaction('books');
-		  let bookStore = tx.objectStore('books');
+		  let tx = db.transaction('client');
+		  let clientStore = tx.objectStore('client');
 
-		  let books = await bookStore.getAll();
+		  let clients = await clientStore.getAll();
 
-		  if (books.length) {
-			listElem.innerHTML = books.map(book => `<li>
-				name: ${book.name}, price: ${book.price}
+		  if (clients.length) {
+			listElem.innerHTML = clients.map(client => `<li>
+				name: ${client.name}, price: ${client.phone} , price: ${client.addresss}
 			  </li>`).join('');
 		  } else {
-			listElem.innerHTML = '<li>No books yet. Please add books.</li>'
+			listElem.innerHTML = '<li>No clients yet. Please add clients.</li>'
 		  }
 
 
 		}
 
-	 function clearBooks() {
+		function clearBooks() {
 		  let tx = db.transaction('books', 'readwrite');
 		   tx.objectStore('books').clear();
 		   list();
 		}
 
 		 function addBook() {
-		  let name = prompt("Book name?");
-		  let price = +prompt("Book price?");
-
-		  let tx = db.transaction('books', 'readwrite');
+		  let name = prompt("Client name?");
+		  let phone = +prompt("Client phone?");
+		  let adress = +prompt("Client addresss?");
+			
+		  let tx = db.transaction('client', 'readwrite');
 
 		  try {
-			 tx.objectStore('books').add({name, price});
+			 tx.objectStore('client').add({name, phone, adress});
 			 list();
 		  } catch(err) {
 			if (err.name == 'ConstraintError') {
