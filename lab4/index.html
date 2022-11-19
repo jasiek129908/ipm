@@ -7,6 +7,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/idb@3.0.2/build/idb.min.js"></script>
 
 	<div>
+		<label for="name">adres email</label>
+		<input id="name" placeholder="jan kowalski" type="text" required>
+	</div>
+	<div>
 		<label for="email">adres email</label>
 		<input id="email" placeholder="jan@example.com" type="email" required>
 	</div>
@@ -46,8 +50,8 @@
 		init();
 
 		async function init() {
-		  db = await idb.openDb('clientDb2', 1, db => {
-			clientObject = db.createObjectStore('client', {keyPath: 'name'});
+		  db = await idb.openDb('database2', 1, db => {
+			clientObject = db.createObjectStore('client',{autoIncrement: true});
 		  });
 
 		  list();
@@ -61,7 +65,7 @@
 
 		  if (clients.length) {
 			listElem.innerHTML = clients.map(client => `<li>
-				name: ${client.email}, price: ${client.kod_pocztowy} , price: ${client.numer_nip}, price: ${client.numer_dowodu},  price: ${client.numer_telefonu}
+				imie: ${client.name}, email: ${client.email}, kod_pocztowy: ${client.kod_pocztowy} , numer nip: ${client.numer_nip}, numer dowodu: ${client.numer_dowodu},  number telefonu: ${client.numer_telefonu}
 			  </li>`).join('');
 		  } else {
 			listElem.innerHTML = '<li>Brak kontrachentow</li>'
@@ -77,7 +81,8 @@
 		}
 		
 		function sprawdzPoprawnosc(){
-			formInputs = new Array(document.getElementById("email"),
+			formInputs = new Array(document.getElementById("name"),
+			document.getElementById("email"),
 			document.getElementById("kod_pocztowy"),
 			document.getElementById("numer_nip"),
 			document.getElementById("numer_dowodu"),
@@ -97,6 +102,7 @@
 		}
 		
 		function wypelnijDane(){
+			document.getElementById("name").value="Zbigniew Kowalski";
 			document.getElementById("email").value = "jan@example.com";
 			document.getElementById("kod_pocztowy").value= "91-400";
 			document.getElementById("numer_nip").value= "701-249-82-16";
@@ -109,17 +115,19 @@
 				alert("zle dane.");  
 				return;
 			}
-		  
-			let email=document.getElementById("email");
-			let kod_pocztowy=document.getElementById("kod_pocztowy");
-			let numer_nip=document.getElementById("numer_nip");
-			let numer_dowodu=document.getElementById("numer_dowodu");
-			let numer_telefonu=document.getElementById("numer_telefonu");
-			
-		  let tx = db.transaction('client', 'readwrite');
-
+		  let tx = db.transaction(["client"], "readwrite");
 		  try {
-			 tx.objectStore('client').add({email, kod_pocztowy, numer_nip,numer_dowodu,numer_telefonu});
+			  
+					tx.objectStore("client")
+					.add({
+						name:document.getElementById("name").value,
+						email:document.getElementById("email").value,
+						kod_pocztowy:document.getElementById("kod_pocztowy").value,
+						numer_nip:document.getElementById("numer_nip").value,
+						numer_dowodu:document.getElementById("numer_dowodu").value,
+						numer_telefonu:document.getElementById("numer_telefonu").value
+					});
+
 			 list();
 		  } catch(err) {
 			if (err.name == 'ConstraintError') {
