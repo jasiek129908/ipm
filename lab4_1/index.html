@@ -45,7 +45,7 @@
 <button onclick="list()">Wyswietl liste</button>
 <p>Kontrachenci:</p>
 
-<ul id="listElem"></ul>
+<div id="listElem"></div>
 
 <script>
 		var db;
@@ -60,6 +60,15 @@
         };
 	
 		async function list() {
+			const parent = document.getElementById("listElem");
+			while (parent.firstChild) {
+				parent.removeChild(parent.firstChild);
+			}
+
+			let tabelka = document.createElement("table");
+            let tr = document.createElement("tr");
+            let header = ["imie", "email", "kod pocztowy", "numer nip", "numer dowodu", "numer telefonu"];
+			
 		  let tx = db.transaction('client');
 		  let clientStore = tx.objectStore('client');
 
@@ -76,11 +85,11 @@
 			  }
 			};
 
-			document.querySelectorAll('#contractor').forEach(item => {
+			document.querySelectorAll('.contractor').forEach(item => {
 				console.log('element');
 				item.addEventListener('focusout', event => {
 					console.log('focus out');
-				})
+				});
 			})
 		}
 
