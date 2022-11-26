@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+	
+	<div>
+		<label for="name">adres email</label>
+		<input id="name" placeholder="jan kowalski" type="text" required>
+	</div>
+	<div>
+		<label for="email">adres email</label>
+		<input id="email" placeholder="jan@example.com" type="email" required>
+	</div>
+	<div>
+		<label for="kod_pocztowy">kod pocztowy</label>
+		<input id="kod_pocztowy" placeholder="91-400" pattern="^[0-9]{2}-[0-9]{3}$" type="text" required>
+	</div>
+	<div>
+		<label for="numer_nip">numer nip</label>
+		<input id="numer_nip" placeholder="701-249-82-16" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$" type="text" required>
+	</div>
+	<div>
+		<label for="numer_dowodu">numer dowodu</label>
+		<input id="numer_dowodu" placeholder="CAQ123456" pattern="^[A-Z]{3}[0-9]{6}$" type="text" required>
+	</div>
+	<div>
+		<label for="numer_telefonu">numer telefonu</label>
+		<input id="numer_telefonu" placeholder="123456789" type="tel" pattern="^[0-9]{9}$" required>
+	</div>
+
+	<div>
+		<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>
+	</div>
+
+
+	
+<button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
+<button onclick="usunKontrachentow()">Usun kontrachentow</button>
+
+<p>Kontrachenci:</p>
+
+<ul id="listElem"></ul>
+
+<script>
+		var db;
+        const request = indexedDB.open('database12');
+        request.onsuccess = function (event) {
+            db = request.result;
+        };
+
+        request.onupgradeneeded = (event) => {
+            db = event.target.result;
+            let store = db.createObjectStore('client', {autoIncrement: true});
+        };
+	
+		async function list() {
+		  let tx = db.transaction('client');
+		  let clientStore = tx.objectStore('client');
+
+		  clientStore.getAll().onsuccess = function(event) {
+		  console.log(event.target.result)
+				if (event.target.result.length) {
+				listElem.innerHTML = event.target.result.map(client => `<li>
+					imie: ${client.name}, email: ${client.email}, kod_pocztowy: ${client.kod_pocztowy} , numer nip: ${client.numer_nip}, numer dowodu: ${client.numer_dowodu},  number telefonu: ${client.numer_telefonu}
+				  </li>`).join('');
+			  } else {
+				listElem.innerHTML = '<li>Brak kontrachentow</li>'
+			  }
+			};
+
+		}
+
+		async function usunKontrachentow() {
+		  let tx = db.transaction('client', 'readwrite');
+		  await tx.objectStore('client').clear();
+		  await list();
+		}
+		
+		function sprawdzPoprawnosc(){
+			formInputs = new Array(document.getElementById("name"),
+			document.getElementById("email"),
+			document.getElementById("kod_pocztowy"),
+			document.getElementById("numer_nip"),
+			document.getElementById("numer_dowodu"),
+			document.getElementById("numer_telefonu"));
+			bad=true;
+            for (input of formInputs){
+				if (!input.checkValidity()) {
+				bad=false;
+                    input.style.border = "1px solid red";
+                }
+                else {
+                    input.style.border = "1px solid green";
+                }
+            }
+			return bad;
+			
+		}
+		
+		function wypelnijDane(){
+			document.getElementById("name").value="Zbigniew Kowalski";
+			document.getElementById("email").value = "jan@example.com";
+			document.getElementById("kod_pocztowy").value= "91-400";
+			document.getElementById("numer_nip").value= "701-249-82-16";
+			document.getElementById("numer_dowodu").value= "CAQ123456";
+			document.getElementById("numer_telefonu").value= "123456789";
+		}
+		
+		 function dodajKontrachenta() {
+			if(sprawdzPoprawnosc()==false){
+				alert("zle dane.");  
+				return;
+			}
+		  let tx = db.transaction(["client"], "readwrite");
+		  try {
+			  
+					tx.objectStore("client")
+					.add({
+						name:document.getElementById("name").value,
+						email:document.getElementById("email").value,
+						kod_pocztowy:document.getElementById("kod_pocztowy").value,
+						numer_nip:document.getElementById("numer_nip").value,
+						numer_dowodu:document.getElementById("numer_dowodu").value,
+						numer_telefonu:document.getElementById("numer_telefonu").value
+					});
+				console.log("dodalem");
+			 list();
+		  } catch(err) {
+			if (err.name == 'ConstraintError') {
+			  alert("Such book exists already");
+			  addBook();
+			} else {
+			  throw err;
+			}
+		  }
+		}
+
+		window.addEventListener('unhandledrejection', event => {
+		  alert("Error: " + event.reason.message);
+		});
+
+		</script>
+	</body>
+</html>
