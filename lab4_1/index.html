@@ -122,6 +122,7 @@
 			{name:"Szczepan Wieszcz",email:"szczepan@wp.pl",kod_pocztowy:"33-201",numer_nip:"871-249-82-16",numer_dowodu:"OIY098234",numer_telefonu:"329847123"},
 			{name:"Natlia Kolatka",email:"natlia@wp.pl",kod_pocztowy:"98-201",numer_nip:"981-249-82-16",numer_dowodu:"GTY982734",numer_telefonu:"981273124"}
 		];
+		var indexOfLastRead = 0;
 
 		function sprawdzPoprawnosc(){
 			formInputs = new Array(document.getElementById("name"),
@@ -145,12 +146,21 @@
 		}
 		
 		function wypelnijDane(){
-			document.getElementById("name").value="Zbigniew Kowalski";
-			document.getElementById("email").value = "jan@example.com";
-			document.getElementById("kod_pocztowy").value= "91-400";
-			document.getElementById("numer_nip").value= "701-249-82-16";
-			document.getElementById("numer_dowodu").value= "CAQ123456";
-			document.getElementById("numer_telefonu").value= "123456789";
+
+			if(indexOfLastRead < listOfContractors.length){
+				let currentContractor = listOfContractors[indexOfLastRead];
+
+				document.getElementById("name").value = currentContractor.name;
+				document.getElementById("email").value = currentContractor.email;
+				document.getElementById("kod_pocztowy").value= currentContractor.kod_pocztowy;
+				document.getElementById("numer_nip").value= currentContractor.numer_nip;
+				document.getElementById("numer_dowodu").value= currentContractor.numer_dowodu;
+				document.getElementById("numer_telefonu").value= currentContractor.numer_telefonu;
+				
+				indexOfLastRead++;
+			}else{
+				indexOfLastRead=0;
+			}
 		}
 		
 		</script>
