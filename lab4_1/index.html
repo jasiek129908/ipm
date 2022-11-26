@@ -3,15 +3,16 @@
 	<head>
 		<meta charset="UTF-8">
 		<style>
-			#contractor{
+			.contractor{
 				background-color: #a0e1e7;
 				display: inline-block;
   				width: 50px;
 				width: 150px;
+				border: 1px black solid;
 			}
 		</style>
 	</head>
-	<body>
+	<br>
 	
 	<div>
 		<label for="name">imie i nazwisko</label>
@@ -38,15 +39,10 @@
 		<input id="numer_telefonu" placeholder="123456789" type="tel" pattern="^[0-9]{9}$" required>
 	</div>
 
-	<div>
-		<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>
-	</div>
-
-
-	
+<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>	
 <button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
 <button onclick="usunKontrachentow()">Usun kontrachentow</button>
-
+<button onclick="list()">Wyswietl liste</button>
 <p>Kontrachenci:</p>
 
 <ul id="listElem"></ul>
@@ -70,16 +66,22 @@
 		  clientStore.getAll().onsuccess = function(event) {
 				if (event.target.result.length) {
 				listElem.innerHTML = event.target.result.map(client => `<li>
-					imie: <span id="contractor">${client.name}</span>, email: <span id="contractor">${client.email}</span>
-					, kod_pocztowy: <span id="contractor">${client.kod_pocztowy}</span>, numer nip: <span id="contractor">${client.numer_nip}</span>
-					, numer dowodu: <span id="contractor">${client.numer_dowodu}</span>,  number telefonu: 
-					<span id="contractor">${client.numer_telefonu}</span>
+					imie: <span class="contractor" contenteditable="true">${client.name}</span>, email: <span class="contractor"contenteditable="true">${client.email}</span>
+					, kod_pocztowy: <span class="contractor" contenteditable="true">${client.kod_pocztowy}</span>, numer nip: <span class="contractor" contenteditable="true">${client.numer_nip}</span>
+					, numer dowodu: <span class="contractor" contenteditable="true">${client.numer_dowodu}</span>,  number telefonu: 
+					<span class="contractor" contenteditable="true">${client.numer_telefonu}</span>
 				  </li></br>`).join('');
 			  } else {
 				listElem.innerHTML = '<li>Brak kontrachentow</li>'
 			  }
 			};
 
+			document.querySelectorAll('#contractor').forEach(item => {
+				console.log('element');
+				item.addEventListener('focusout', event => {
+					console.log('focus out');
+				})
+			})
 		}
 
 		async function usunKontrachentow() {
