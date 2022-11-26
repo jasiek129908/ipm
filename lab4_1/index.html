@@ -2,6 +2,14 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
+		<style>
+			#contractor{
+				background-color: #a0e1e7;
+				display: inline-block;
+  				width: 50px;
+				width: 150px;
+			}
+		</style>
 	</head>
 	<body>
 	
@@ -18,15 +26,15 @@
 		<input id="kod_pocztowy" placeholder="91-400" pattern="^[0-9]{2}-[0-9]{3}$" type="text" required>
 	</div>
 	<div>
-		<label for="numer_nip">numer nip</label>
+		<label for="numer_nip">nip</label>
 		<input id="numer_nip" placeholder="701-249-82-16" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$" type="text" required>
 	</div>
 	<div>
-		<label for="numer_dowodu">numer dowodu</label>
+		<label for="numer_dowodu">dowod</label>
 		<input id="numer_dowodu" placeholder="CAQ123456" pattern="^[A-Z]{3}[0-9]{6}$" type="text" required>
 	</div>
 	<div>
-		<label for="numer_telefonu">numer telefonu</label>
+		<label for="numer_telefonu">telefon</label>
 		<input id="numer_telefonu" placeholder="123456789" type="tel" pattern="^[0-9]{9}$" required>
 	</div>
 
@@ -60,11 +68,13 @@
 		  let clientStore = tx.objectStore('client');
 
 		  clientStore.getAll().onsuccess = function(event) {
-		  console.log(event.target.result)
 				if (event.target.result.length) {
 				listElem.innerHTML = event.target.result.map(client => `<li>
-					imie: ${client.name}, email: ${client.email}, kod_pocztowy: ${client.kod_pocztowy} , numer nip: ${client.numer_nip}, numer dowodu: ${client.numer_dowodu},  number telefonu: ${client.numer_telefonu}
-				  </li>`).join('');
+					imie: <span id="contractor">${client.name}</span>, email: <span id="contractor">${client.email}</span>
+					, kod_pocztowy: <span id="contractor">${client.kod_pocztowy}</span>, numer nip: <span id="contractor">${client.numer_nip}</span>
+					, numer dowodu: <span id="contractor">${client.numer_dowodu}</span>,  number telefonu: 
+					<span id="contractor">${client.numer_telefonu}</span>
+				  </li></br>`).join('');
 			  } else {
 				listElem.innerHTML = '<li>Brak kontrachentow</li>'
 			  }
@@ -156,7 +166,7 @@
 				document.getElementById("numer_nip").value= currentContractor.numer_nip;
 				document.getElementById("numer_dowodu").value= currentContractor.numer_dowodu;
 				document.getElementById("numer_telefonu").value= currentContractor.numer_telefonu;
-				
+
 				indexOfLastRead++;
 			}else{
 				indexOfLastRead=0;
