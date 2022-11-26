@@ -6,7 +6,7 @@
 	<body>
 	
 	<div>
-		<label for="name">adres email</label>
+		<label for="name">imie i nazwisko</label>
 		<input id="name" placeholder="jan kowalski" type="text" required>
 	</div>
 	<div>
@@ -78,36 +78,6 @@
 		  await list();
 		}
 		
-		function sprawdzPoprawnosc(){
-			formInputs = new Array(document.getElementById("name"),
-			document.getElementById("email"),
-			document.getElementById("kod_pocztowy"),
-			document.getElementById("numer_nip"),
-			document.getElementById("numer_dowodu"),
-			document.getElementById("numer_telefonu"));
-			bad=true;
-            for (input of formInputs){
-				if (!input.checkValidity()) {
-				bad=false;
-                    input.style.border = "1px solid red";
-                }
-                else {
-                    input.style.border = "1px solid green";
-                }
-            }
-			return bad;
-			
-		}
-		
-		function wypelnijDane(){
-			document.getElementById("name").value="Zbigniew Kowalski";
-			document.getElementById("email").value = "jan@example.com";
-			document.getElementById("kod_pocztowy").value= "91-400";
-			document.getElementById("numer_nip").value= "701-249-82-16";
-			document.getElementById("numer_dowodu").value= "CAQ123456";
-			document.getElementById("numer_telefonu").value= "123456789";
-		}
-		
 		 function dodajKontrachenta() {
 			if(sprawdzPoprawnosc()==false){
 				alert("zle dane.");  
@@ -141,6 +111,37 @@
 		  alert("Error: " + event.reason.message);
 		});
 
+
+		function sprawdzPoprawnosc(){
+			formInputs = new Array(document.getElementById("name"),
+			document.getElementById("email"),
+			document.getElementById("kod_pocztowy"),
+			document.getElementById("numer_nip"),
+			document.getElementById("numer_dowodu"),
+			document.getElementById("numer_telefonu"));
+			bad=true;
+            for (input of formInputs){
+				if (!input.checkValidity()) {
+				bad=false;
+                    input.style.border = "1px solid red";
+                }
+                else {
+                    input.style.border = "1px solid green";
+                }
+            }
+			return bad;
+			
+		}
+		
+		function wypelnijDane(){
+			document.getElementById("name").value="Zbigniew Kowalski";
+			document.getElementById("email").value = "jan@example.com";
+			document.getElementById("kod_pocztowy").value= "91-400";
+			document.getElementById("numer_nip").value= "701-249-82-16";
+			document.getElementById("numer_dowodu").value= "CAQ123456";
+			document.getElementById("numer_telefonu").value= "123456789";
+		}
+		
 		</script>
 	</body>
 </html>
