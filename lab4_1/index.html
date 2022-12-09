@@ -1,189 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<style>
-			.contractor{
-				background-color: #a0e1e7;
-				display: inline-block;
-  				width: 50px;
-				width: 150px;
-				border: 1px black solid;
-			}
-		</style>
-	</head>
-	<br>
-	
-	<div>
-		<label for="name">imie i nazwisko</label>
-		<input id="name" placeholder="jan kowalski" type="text" required>
-	</div>
-	<div>
-		<label for="email">adres email</label>
-		<input id="email" placeholder="jan@example.com" type="email" required>
-	</div>
-	<div>
-		<label for="kod_pocztowy">kod pocztowy</label>
-		<input id="kod_pocztowy" placeholder="91-400" pattern="^[0-9]{2}-[0-9]{3}$" type="text" required>
-	</div>
-	<div>
-		<label for="numer_nip">nip</label>
-		<input id="numer_nip" placeholder="701-249-82-16" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$" type="text" required>
-	</div>
-	<div>
-		<label for="numer_dowodu">dowod</label>
-		<input id="numer_dowodu" placeholder="CAQ123456" pattern="^[A-Z]{3}[0-9]{6}$" type="text" required>
-	</div>
-	<div>
-		<label for="numer_telefonu">telefon</label>
-		<input id="numer_telefonu" placeholder="123456789" type="tel" pattern="^[0-9]{9}$" required>
-	</div>
 
-<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>	
+<head>
+	<meta charset="UTF-8">
+	<style>
+		.contractor {
+			background-color: #a0e1e7;
+			display: inline-block;
+			width: 50px;
+			width: 150px;
+			border: 1px black solid;
+		}
+
+		table {
+			table-layout: auto;
+			width: 100%;
+		}
+		tr{
+			width: 100%;
+		}
+		th,
+		td {
+			border: 2px solid #4a5c5e;
+		}
+
+	</style>
+</head>
+<br>
+
+<div>
+	<label for="name">imie i nazwisko</label>
+	<input id="name" placeholder="jan kowalski" type="text" required>
+</div>
+<div>
+	<label for="email">adres email</label>
+	<input id="email" placeholder="jan@example.com" type="email" required>
+</div>
+<div>
+	<label for="kod_pocztowy">kod pocztowy</label>
+	<input id="kod_pocztowy" placeholder="91-400" pattern="^[0-9]{2}-[0-9]{3}$" type="text" required>
+</div>
+<div>
+	<label for="numer_nip">nip</label>
+	<input id="numer_nip" placeholder="701-249-82-16" pattern="^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$" type="text"
+		required>
+</div>
+<div>
+	<label for="numer_dowodu">dowod</label>
+	<input id="numer_dowodu" placeholder="CAQ123456" pattern="^[A-Z]{3}[0-9]{6}$" type="text" required>
+</div>
+<div>
+	<label for="numer_telefonu">telefon</label>
+	<input id="numer_telefonu" placeholder="123456789" type="tel" pattern="^[0-9]{9}$" required>
+</div>
+
+<button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>
 <button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
 <button onclick="usunKontrachentow()">Usun kontrachentow</button>
 <button onclick="list()">Wyswietl liste</button>
-<p>Kontrachenci:</p>
 
 <div id="listElem"></div>
 
 <script>
-		var db;
-        const request = indexedDB.open('database12');
-        request.onsuccess = function (event) {
-            db = request.result;
-        };
+	var db;
+	const request = indexedDB.open('database12');
+	request.onsuccess = function (event) {
+		db = request.result;
+	};
 
-        request.onupgradeneeded = (event) => {
-            db = event.target.result;
-            let store = db.createObjectStore('client', {autoIncrement: true});
-        };
-	
-		async function list() {
-			const parent = document.getElementById("listElem");
-			while (parent.firstChild) {
-				parent.removeChild(parent.firstChild);
-			}
+	request.onupgradeneeded = (event) => {
+		db = event.target.result;
+		let store = db.createObjectStore('client', { autoIncrement: true });
+	};
 
-			let tabelka = document.createElement("table");
-            let tr = document.createElement("tr");
-            let header = ["imie", "email", "kod pocztowy", "numer nip", "numer dowodu", "numer telefonu"];
-			
-		  let tx = db.transaction('client');
-		  let clientStore = tx.objectStore('client');
+	function defineTable() {
 
-		  clientStore.getAll().onsuccess = function(event) {
-				if (event.target.result.length) {
-				listElem.innerHTML = event.target.result.map(client => `<li>
-					imie: <span class="contractor" contenteditable="true">${client.name}</span>, email: <span class="contractor"contenteditable="true">${client.email}</span>
-					, kod_pocztowy: <span class="contractor" contenteditable="true">${client.kod_pocztowy}</span>, numer nip: <span class="contractor" contenteditable="true">${client.numer_nip}</span>
-					, numer dowodu: <span class="contractor" contenteditable="true">${client.numer_dowodu}</span>,  number telefonu: 
-					<span class="contractor" contenteditable="true">${client.numer_telefonu}</span>
-				  </li></br>`).join('');
-			  } else {
-				listElem.innerHTML = '<li>Brak kontrachentow</li>'
-			  }
-			};
-
-			document.querySelectorAll('.contractor').forEach(item => {
-				console.log('element');
-				item.addEventListener('focusout', event => {
-					console.log('focus out');
-				});
-			})
+		const parent = document.getElementById("listElem");
+		while (parent.firstChild) {
+			parent.removeChild(parent.firstChild);
 		}
 
-		async function usunKontrachentow() {
-		  let tx = db.transaction('client', 'readwrite');
-		  await tx.objectStore('client').clear();
-		  await list();
+		let table = document.createElement("table");
+		let row = document.createElement("tr");
+		let headers = ["imie", "email", "kod pocztowy", "numer nip", "numer dowodu", "numer telefonu"];
+
+		for (var i = 0; i < headers.length; i++) {
+			var th = document.createElement('th');
+			var content = document.createTextNode(headers[i]);
+			th.appendChild(content);
+			row.appendChild(th);
 		}
-		
-		 function dodajKontrachenta() {
-			if(sprawdzPoprawnosc()==false){
-				alert("zle dane.");  
+		table.appendChild(row);
+		parent.appendChild(table);
+	}
+
+	function deleteOneClient(key){
+	let transaction = db.transaction("client", "readwrite");
+	let objectStore = transaction.objectStore("client");
+		console.log(Number(key));
+        let removed = objectStore.delete(Number(key));
+	}
+
+	function updateClientData(key, field, value) {
+		let objectStore = db.transaction("client", "readwrite").objectStore("client");
+		let request = objectStore.get(Number(key));
+
+		request.onsuccess = () => {
+			let clientData = request.result;
+			if (clientData == undefined) {
 				return;
 			}
-		  let tx = db.transaction(["client"], "readwrite");
-		  try {
-			  
-					tx.objectStore("client")
-					.add({
-						name:document.getElementById("name").value,
-						email:document.getElementById("email").value,
-						kod_pocztowy:document.getElementById("kod_pocztowy").value,
-						numer_nip:document.getElementById("numer_nip").value,
-						numer_dowodu:document.getElementById("numer_dowodu").value,
-						numer_telefonu:document.getElementById("numer_telefonu").value
-					});
-				console.log("dodalem");
-			 list();
-		  } catch(err) {
-			if (err.name == 'ConstraintError') {
-			  alert("Such book exists already");
-			  addBook();
-			} else {
-			  throw err;
-			}
-		  }
+			clientData[field] = value;
+			let updateRequest = objectStore.put(clientData, Number(key));
 		}
+	}
 
-		window.addEventListener('unhandledrejection', event => {
-		  alert("Error: " + event.reason.message);
-		});
 
-		var listOfContractors = [
-			{name:"Jan Kowalski",email:"jan@wp.pl",kod_pocztowy:"80-201",numer_nip:"101-249-82-16",numer_dowodu:"CAQ123456",numer_telefonu:"123456789"},
-			{name:"Adam Cichawa",email:"adam@wp.pl",kod_pocztowy:"43-201",numer_nip:"211-249-82-16",numer_dowodu:"BEQ546543",numer_telefonu:"145465472"},
-			{name:"Ryszard Kalisz",email:"ryszard@wp.pl",kod_pocztowy:"65-201",numer_nip:"321-249-82-16",numer_dowodu:"QAF889432",numer_telefonu:"983274671"},
-			{name:"Monika Dabrowksa",email:"monika@wp.pl",kod_pocztowy:"10-201",numer_nip:"431-249-82-16",numer_dowodu:"VKO513241",numer_telefonu:"619233732"},
-			{name:"Artur Stanczyk",email:"artur@wp.pl",kod_pocztowy:"28-201",numer_nip:"541-249-82-16",numer_dowodu:"OIU987954",numer_telefonu:"904837613"},
-			{name:"Weronika Lodyga",email:"weronika@wp.pl",kod_pocztowy:"45-201",numer_nip:"651-249-82-16",numer_dowodu:"VXD893745",numer_telefonu:"389472591"},
-			{name:"Kuba Wojaterk",email:"kuba@wp.pl",kod_pocztowy:"12-201",numer_nip:"761-249-82-16",numer_dowodu:"NIJ093845",numer_telefonu:"435871822"},
-			{name:"Szczepan Wieszcz",email:"szczepan@wp.pl",kod_pocztowy:"33-201",numer_nip:"871-249-82-16",numer_dowodu:"OIY098234",numer_telefonu:"329847123"},
-			{name:"Natlia Kolatka",email:"natlia@wp.pl",kod_pocztowy:"98-201",numer_nip:"981-249-82-16",numer_dowodu:"GTY982734",numer_telefonu:"981273124"}
-		];
-		var indexOfLastRead = 0;
+	async function list() {
+		defineTable();
+		let tx = db.transaction('client');
+		let clientStore = tx.objectStore('client');
+		const parent = document.getElementById("listElem");
+		clientStore.openCursor().onsuccess = function (event) {
+			var res = event.target.result;
+			if (event.target.result) {
+				let clientData = [res.value.name, res.value.email, res.value.kod_pocztowy, res.value.numer_nip, res.value.numer_dowodu, res.value.numer_telefonu];
 
-		function sprawdzPoprawnosc(){
-			formInputs = new Array(document.getElementById("name"),
+				// console.log(res);	
+				let tr = document.createElement('tr');
+				for (let i = 0; i < clientData.length; i++) {
+
+					let td = document.createElement('td');
+					td.setAttribute("contenteditable", "true");
+					td.setAttribute("cliendId", res.key);
+					td.setAttribute("columnNameInDb", Object.keys(res.value)[i]);
+					let text = document.createTextNode(clientData[i]);
+					td.appendChild(text);
+					tr.appendChild(td);
+
+					td.addEventListener('focusout', (eve) => {
+						if (td.getAttribute("cliendId") != undefined && td.getAttribute("columnNameInDb") != undefined && eve.target.innerText.length > 0) {
+							updateClientData(td.getAttribute("cliendId"), td.getAttribute("columnNameInDb"), eve.target.innerText);
+						}
+					});
+				}
+				parent.firstChild.appendChild(tr);
+				var td = document.createElement('td');
+				td.setAttribute("cliendId", res.key);
+                    var button = document.createElement('button');
+                    button.appendChild(document.createTextNode("Usuń"));
+                    td.appendChild(button);
+                    tr.appendChild(td);
+                    button.addEventListener('click', (eve) => {
+                        deleteOneClient(td.getAttribute("cliendId"));
+                        let tr= td.parentNode;
+						let table=tr.parentNode;
+						table.removeChild(tr);
+                    });
+			}
+			if (res != null) {
+				res.continue();
+			}
+		};
+
+		document.querySelectorAll('.contractor').forEach(item => {
+			console.log('element');
+			item.addEventListener('focusout', event => {
+				console.log('focus out');
+			});
+		})
+	}
+
+	async function usunKontrachentow() {
+		let tx = db.transaction('client', 'readwrite');
+		await tx.objectStore('client').clear();
+		await list();
+	}
+
+	function dodajKontrachenta() {
+		if (sprawdzPoprawnosc() == false) {
+			alert("zle dane.");
+			return;
+		}
+		let tx = db.transaction(["client"], "readwrite");
+
+		tx.objectStore("client")
+			.add({
+				name: document.getElementById("name").value,
+				email: document.getElementById("email").value,
+				kod_pocztowy: document.getElementById("kod_pocztowy").value,
+				numer_nip: document.getElementById("numer_nip").value,
+				numer_dowodu: document.getElementById("numer_dowodu").value,
+				numer_telefonu: document.getElementById("numer_telefonu").value
+			});
+		// console.log("dodalem");
+		list();
+
+	}
+
+	window.addEventListener('unhandledrejection', event => {
+		alert("Error: " + event.reason.message);
+	});
+
+	var listOfContractors = [
+		{ name: "Jan Kowalski", email: "jan@wp.pl", kod_pocztowy: "80-201", numer_nip: "101-249-82-16", numer_dowodu: "CAQ123456", numer_telefonu: "123456789" },
+		{ name: "Adam Cichawa", email: "adam@wp.pl", kod_pocztowy: "43-201", numer_nip: "211-249-82-16", numer_dowodu: "BEQ546543", numer_telefonu: "145465472" },
+		{ name: "Ryszard Kalisz", email: "ryszard@wp.pl", kod_pocztowy: "65-201", numer_nip: "321-249-82-16", numer_dowodu: "QAF889432", numer_telefonu: "983274671" },
+		{ name: "Monika Dabrowksa", email: "monika@wp.pl", kod_pocztowy: "10-201", numer_nip: "431-249-82-16", numer_dowodu: "VKO513241", numer_telefonu: "619233732" },
+		{ name: "Artur Stanczyk", email: "artur@wp.pl", kod_pocztowy: "28-201", numer_nip: "541-249-82-16", numer_dowodu: "OIU987954", numer_telefonu: "904837613" },
+		{ name: "Weronika Lodyga", email: "weronika@wp.pl", kod_pocztowy: "45-201", numer_nip: "651-249-82-16", numer_dowodu: "VXD893745", numer_telefonu: "389472591" },
+		{ name: "Kuba Wojaterk", email: "kuba@wp.pl", kod_pocztowy: "12-201", numer_nip: "761-249-82-16", numer_dowodu: "NIJ093845", numer_telefonu: "435871822" },
+		{ name: "Szczepan Wieszcz", email: "szczepan@wp.pl", kod_pocztowy: "33-201", numer_nip: "871-249-82-16", numer_dowodu: "OIY098234", numer_telefonu: "329847123" },
+		{ name: "Natlia Kolatka", email: "natlia@wp.pl", kod_pocztowy: "98-201", numer_nip: "981-249-82-16", numer_dowodu: "GTY982734", numer_telefonu: "981273124" }
+	];
+	var indexOfLastRead = 0;
+
+	function sprawdzPoprawnosc() {
+		formInputs = new Array(document.getElementById("name"),
 			document.getElementById("email"),
 			document.getElementById("kod_pocztowy"),
 			document.getElementById("numer_nip"),
 			document.getElementById("numer_dowodu"),
 			document.getElementById("numer_telefonu"));
-			bad=true;
-            for (input of formInputs){
-				if (!input.checkValidity()) {
-				bad=false;
-                    input.style.border = "1px solid red";
-                }
-                else {
-                    input.style.border = "1px solid green";
-                }
-            }
-			return bad;
-			
-		}
-		
-		function wypelnijDane(){
-
-			if(indexOfLastRead < listOfContractors.length){
-				let currentContractor = listOfContractors[indexOfLastRead];
-
-				document.getElementById("name").value = currentContractor.name;
-				document.getElementById("email").value = currentContractor.email;
-				document.getElementById("kod_pocztowy").value= currentContractor.kod_pocztowy;
-				document.getElementById("numer_nip").value= currentContractor.numer_nip;
-				document.getElementById("numer_dowodu").value= currentContractor.numer_dowodu;
-				document.getElementById("numer_telefonu").value= currentContractor.numer_telefonu;
-
-				indexOfLastRead++;
-			}else{
-				indexOfLastRead=0;
+		bad = true;
+		for (input of formInputs) {
+			if (!input.checkValidity()) {
+				bad = false;
+				input.style.border = "1px solid red";
+			}
+			else {
+				input.style.border = "1px solid green";
 			}
 		}
-		
-		</script>
-	</body>
+		return bad;
+
+	}
+
+	function wypelnijDane() {
+
+		if (indexOfLastRead < listOfContractors.length) {
+			let currentContractor = listOfContractors[indexOfLastRead];
+
+			document.getElementById("name").value = currentContractor.name;
+			document.getElementById("email").value = currentContractor.email;
+			document.getElementById("kod_pocztowy").value = currentContractor.kod_pocztowy;
+			document.getElementById("numer_nip").value = currentContractor.numer_nip;
+			document.getElementById("numer_dowodu").value = currentContractor.numer_dowodu;
+			document.getElementById("numer_telefonu").value = currentContractor.numer_telefonu;
+
+			indexOfLastRead++;
+		} else {
+			indexOfLastRead = 0;
+		}
+	}
+
+</script>
+</body>
+
 </html>
