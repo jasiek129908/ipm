@@ -99,11 +99,17 @@
 			for(let i=0;i<tags.length-1;i++){
 				clientData.push(tags[i].innerText);
 			}
-			console.log(clientData);
-			if (td) {
-				// console.log(td);
+			// console.log(clientData);
+			if (clientData.length>0) {
+				let foundPhrase = false;
+				for(let i=0;i<clientData.length;i++){
+					if (clientData[i].toUpperCase().indexOf(valueToFilter) > -1) {
+						foundPhrase=true;
+						break;
+					} 
+				}
 				txtValue = td.textContent || td.innerText;
-				if (txtValue.toUpperCase().indexOf(valueToFilter) > -1) {
+				if (foundPhrase==true) {
 					tr[i].style.display = "";
 				} else {
 					tr[i].style.display = "none";
