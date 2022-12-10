@@ -61,8 +61,23 @@
 </html>
 <p>Filtry</p>
 <div>
-	<input type="radio" id="name" value="name" checked>
-	<label for="name">Huey</label>
+	<input type="checkbox" id="name" name="1" value="name" onclick="list()">
+	<label for="name">imie</label>
+	
+	<input type="checkbox" id="email" name="2" value="email" onclick="list()">
+	<label for="email">email</label>
+	
+	<input type="checkbox" id="kod_pocztowy" name="3" value="kod_pocztowy" onclick="list()">
+	<label for="kod_pocztowy">kod pocztowy</label>
+	
+	<input type="checkbox" id="numer_nip" name="4" value="numer_nip" onclick="list()">
+	<label for="numer_nip">nip</label>
+
+	<input type="checkbox" id="numer_dowodu" name="5" value="numer_dowodu" onclick="list()">
+	<label for="numer_dowodu">dowod</label>
+
+	<input type="checkbox" id="numer_telefonu" name="6" value="numer_telefonu" onclick="list()">
+	<label for="numer_telefonu">telefon</label>
 </div>
 <p>Wyszukiwarka</p>
 <input type="text" id="wyszukiwarka" onkeyup="searchForClient()">
