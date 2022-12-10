@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<br lang="en">
+<html lang="en">
 
 <head>
 	<meta charset="UTF-8">
@@ -16,17 +16,17 @@
 			table-layout: auto;
 			width: 100%;
 		}
-		tr{
+
+		tr {
 			width: 100%;
 		}
+
 		th,
 		td {
 			border: 2px solid #4a5c5e;
 		}
-
 	</style>
 </head>
-<br>
 
 <div>
 	<label for="name">imie i nazwisko</label>
@@ -58,9 +58,13 @@
 <button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
 <button onclick="usunKontrachentow()">Usun kontrachentow</button>
 <button onclick="list()">Wyswietl liste</button>
-</br>
-</br>
-<p>Wyszukiwarka(podaj imie i nazwisko)</p>
+</html>
+<p>Filtry</p>
+<div>
+	<input type="radio" id="name" value="name" checked>
+	<label for="name">Huey</label>
+</div>
+<p>Wyszukiwarka</p>
 <input type="text" id="wyszukiwarka" onkeyup="searchForClient()">
 
 <div id="listElem"></div>
@@ -77,44 +81,44 @@
 		let store = db.createObjectStore('client', { autoIncrement: true });
 	};
 
-	function searchForClient(){
+	function searchForClient() {
 		let input = document.getElementById("wyszukiwarka");
 		let valueToFilter = input.value.toUpperCase();
 		table = document.getElementById("tabelkaa");
-		if(table==null){
+		if (table == null) {
 			console.log('pusta lista');
 			return;
 		}
-  		tr = table.getElementsByTagName("tr");
+		tr = table.getElementsByTagName("tr");
 		for (i = 0; i < tr.length; i++) {
 			//skiping 1 row it is headers
-			if(i==0){
+			if (i == 0) {
 				continue;
 			}
 
 			td = tr[i].getElementsByTagName("td")[0];
-			let tags= tr[i].getElementsByTagName("td");
-			let clientData = []; 
+			let tags = tr[i].getElementsByTagName("td");
+			let clientData = [];
 			//last tag is a remove button
-			for(let i=0;i<tags.length-1;i++){
+			for (let i = 0; i < tags.length - 1; i++) {
 				clientData.push(tags[i].innerText);
 			}
 			// console.log(clientData);
-			if (clientData.length>0) {
+			if (clientData.length > 0) {
 				let foundPhrase = false;
-				for(let i=0;i<clientData.length;i++){
+				for (let i = 0; i < clientData.length; i++) {
 					if (clientData[i].toUpperCase().indexOf(valueToFilter) > -1) {
-						foundPhrase=true;
+						foundPhrase = true;
 						break;
-					} 
+					}
 				}
 				txtValue = td.textContent || td.innerText;
-				if (foundPhrase==true) {
+				if (foundPhrase == true) {
 					tr[i].style.display = "";
 				} else {
 					tr[i].style.display = "none";
 				}
-			}       
+			}
 		}
 
 	}
@@ -141,11 +145,11 @@
 		parent.appendChild(table);
 	}
 
-	function deleteOneClient(key){
-	let transaction = db.transaction("client", "readwrite");
-	let objectStore = transaction.objectStore("client");
+	function deleteOneClient(key) {
+		let transaction = db.transaction("client", "readwrite");
+		let objectStore = transaction.objectStore("client");
 		console.log(Number(key));
-        let removed = objectStore.delete(Number(key));
+		let removed = objectStore.delete(Number(key));
 	}
 
 	function updateClientData(key, field, value) {
@@ -194,16 +198,16 @@
 				parent.firstChild.appendChild(tr);
 				var td = document.createElement('td');
 				td.setAttribute("cliendId", res.key);
-                    var button = document.createElement('button');
-                    button.appendChild(document.createTextNode("Usuń"));
-                    td.appendChild(button);
-                    tr.appendChild(td);
-                    button.addEventListener('click', (eve) => {
-                        deleteOneClient(td.getAttribute("cliendId"));
-                        let tr= td.parentNode;
-						let table=tr.parentNode;
-						table.removeChild(tr);
-                    });
+				var button = document.createElement('button');
+				button.appendChild(document.createTextNode("Usuń"));
+				td.appendChild(button);
+				tr.appendChild(td);
+				button.addEventListener('click', (eve) => {
+					deleteOneClient(td.getAttribute("cliendId"));
+					let tr = td.parentNode;
+					let table = tr.parentNode;
+					table.removeChild(tr);
+				});
 			}
 			if (res != null) {
 				res.continue();
