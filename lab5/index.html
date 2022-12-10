@@ -92,11 +92,12 @@
 				continue;
 			}
 
-			console.log(i);
+			console.log(tr);
+			// clientaData = 
 			td = tr[i].getElementsByTagName("td")[0];
 			if (td) {
+				// console.log(td);
 				txtValue = td.textContent || td.innerText;
-				console.log(txtValue);
 				if (txtValue.toUpperCase().indexOf(valueToFilter) > -1) {
 					tr[i].style.display = "";
 				} else {
