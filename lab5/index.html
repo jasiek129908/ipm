@@ -80,6 +80,24 @@
 	function searchForClient(){
 		let input = document.getElementById("wyszukiwarka");
 		let valueToFilter = input.value.toUpperCase();
+		table = document.getElementById("tabelkaa");
+  		tr = table.getElementsByTagName("tr");
+		console.log('123');
+		for (i = 0; i < tr.length; i++) {
+			console.log(i);
+			if(i==0){
+				continue;
+			}
+			// td = tr[i].getElementsByTagName("td")[0];
+			// if (td) {
+			// 	txtValue = td.textContent || td.innerText;
+			// 	if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			// 		tr[i].style.display = "";
+			// 	} else {
+			// 		tr[i].style.display = "none";
+			// 	}
+			// }       
+		}
 
 	}
 
@@ -91,6 +109,7 @@
 		}
 
 		let table = document.createElement("table");
+		table.setAttribute("id", "tabelkaa")
 		let row = document.createElement("tr");
 		let headers = ["imie", "email", "kod pocztowy", "numer nip", "numer dowodu", "numer telefonu"];
 
