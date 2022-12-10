@@ -81,22 +81,28 @@
 		let input = document.getElementById("wyszukiwarka");
 		let valueToFilter = input.value.toUpperCase();
 		table = document.getElementById("tabelkaa");
+		if(table==null){
+			console.log('pusta lista');
+			return;
+		}
   		tr = table.getElementsByTagName("tr");
-		console.log('123');
 		for (i = 0; i < tr.length; i++) {
-			console.log(i);
+			//skiping 1 row it is headers
 			if(i==0){
 				continue;
 			}
-			// td = tr[i].getElementsByTagName("td")[0];
-			// if (td) {
-			// 	txtValue = td.textContent || td.innerText;
-			// 	if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			// 		tr[i].style.display = "";
-			// 	} else {
-			// 		tr[i].style.display = "none";
-			// 	}
-			// }       
+
+			console.log(i);
+			td = tr[i].getElementsByTagName("td")[0];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				console.log(txtValue);
+				if (txtValue.toUpperCase().indexOf(valueToFilter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}       
 		}
 
 	}
