@@ -61,7 +61,7 @@
 </br>
 </br>
 <p>Wyszukiwarka(podaj imie i nazwisko)</p>
-<input type="text" id="wyszukiwarka">
+<input type="text" id="wyszukiwarka" onkeyup="searchForClient()">
 
 <div id="listElem"></div>
 
@@ -76,6 +76,12 @@
 		db = event.target.result;
 		let store = db.createObjectStore('client', { autoIncrement: true });
 	};
+
+	function searchForClient(){
+		let input = document.getElementById("wyszukiwarka");
+		let valueToFilter = input.value.toUpperCase();
+
+	}
 
 	function defineTable() {
 
