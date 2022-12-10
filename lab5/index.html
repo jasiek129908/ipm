@@ -92,9 +92,14 @@
 				continue;
 			}
 
-			console.log(tr);
-			// clientaData = 
 			td = tr[i].getElementsByTagName("td")[0];
+			let tags= tr[i].getElementsByTagName("td");
+			let clientData = []; 
+			//last tag is a remove button
+			for(let i=0;i<tags.length-1;i++){
+				clientData.push(tags[i].innerText);
+			}
+			console.log(clientData);
 			if (td) {
 				// console.log(td);
 				txtValue = td.textContent || td.innerText;
