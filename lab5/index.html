@@ -57,7 +57,7 @@
 <button onClick="wypelnijDane()">Wypełnij pola poprawnymi danymi</button>
 <button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
 <button onclick="usunKontrachentow()">Usun kontrachentow</button>
-<button onclick="list()">Wyswietl liste</button>
+<button onclick="showListClickedlist()">Wyswietl liste</button>
 
 </html>
 <p>Filtry</p>
@@ -124,7 +124,6 @@
 			for (let i = 0; i < tags.length - 1; i++) {
 				clientData.push(tags[i].innerText);
 			}
-			// console.log(clientData);
 			if (clientData.length > 0) {
 				let foundPhrase = false;
 				for (let i = 0; i < clientData.length; i++) {
@@ -181,7 +180,6 @@
 	function deleteOneClient(key) {
 		let transaction = db.transaction("client", "readwrite");
 		let objectStore = transaction.objectStore("client");
-		console.log(Number(key));
 		let removed = objectStore.delete(Number(key));
 	}
 
@@ -196,6 +194,19 @@
 			}
 			clientData[field] = value;
 			let updateRequest = objectStore.put(clientData, Number(key));
+		}
+	}
+
+	function showListClickedlist() {
+		selectFilters();
+		list();
+	}
+
+	function selectFilters() {
+		let filterDiv = document.getElementById("filters");
+		let filters = filterDiv.getElementsByTagName("input");
+		for (let i = 0; i < filters.length; i++) {
+			filters[i].checked = true;
 		}
 	}
 
@@ -221,7 +232,6 @@
 		clientStore.openCursor().onsuccess = function (event) {
 			var res = event.target.result;
 			if (event.target.result) {
-				console.log(filters)
 				// let clientData = [res.value.name, res.value.email, res.value.kod_pocztowy, res.value.numer_nip, res.value.numer_dowodu, res.value.numer_telefonu];
 				let clientData = [];
 				for (let i = 0; i < filters.length; i++) {
@@ -244,8 +254,6 @@
 						}
 					});
 				}
-				console.log(parent.firstChild);
-				console.log(document.getElementById("tabelkaa").firstChild.childElementCount);
 				if (document.getElementById("tabelkaa").firstChild.childElementCount > 0) {
 					parent.firstChild.appendChild(tr);
 					var td = document.createElement('td');
@@ -266,13 +274,6 @@
 				res.continue();
 			}
 		};
-
-		document.querySelectorAll('.contractor').forEach(item => {
-			console.log('element');
-			item.addEventListener('focusout', event => {
-				console.log('focus out');
-			});
-		})
 	}
 
 	async function usunKontrachentow() {
