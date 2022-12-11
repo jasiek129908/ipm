@@ -58,25 +58,26 @@
 <button onclick="dodajKontrachenta()">Dodaj kontrachenta</button>
 <button onclick="usunKontrachentow()">Usun kontrachentow</button>
 <button onclick="list()">Wyswietl liste</button>
+
 </html>
 <p>Filtry</p>
-<div>
-	<input type="checkbox" id="name" name="1" value="name" onclick="list()">
+<div id="filters">
+	<input type="checkbox" id="name" value="name" onclick="test()" checked />
 	<label for="name">imie</label>
-	
-	<input type="checkbox" id="email" name="2" value="email" onclick="list()">
+
+	<input type="checkbox" id="email" value="email" onclick="test()" checked />
 	<label for="email">email</label>
-	
-	<input type="checkbox" id="kod_pocztowy" name="3" value="kod_pocztowy" onclick="list()">
+
+	<input type="checkbox" id="kod_pocztowy" value="kod_pocztowy" onclick="test()" checked />
 	<label for="kod_pocztowy">kod pocztowy</label>
-	
-	<input type="checkbox" id="numer_nip" name="4" value="numer_nip" onclick="list()">
+
+	<input type="checkbox" id="numer_nip" value="numer_nip" onclick="test()" checked />
 	<label for="numer_nip">nip</label>
 
-	<input type="checkbox" id="numer_dowodu" name="5" value="numer_dowodu" onclick="list()">
+	<input type="checkbox" id="numer_dowodu" value="numer_dowodu" onclick="test()" checked />
 	<label for="numer_dowodu">dowod</label>
 
-	<input type="checkbox" id="numer_telefonu" name="6" value="numer_telefonu" onclick="list()">
+	<input type="checkbox" id="numer_telefonu" value="numer_telefonu" onclick="test()" checked />
 	<label for="numer_telefonu">telefon</label>
 </div>
 <p>Wyszukiwarka</p>
@@ -85,6 +86,11 @@
 <div id="listElem"></div>
 
 <script>
+
+	function test() {
+		//dlaczego nie moge wywolac bezposrednio na inputach listy????
+		list();
+	}
 	var db;
 	const request = indexedDB.open('database12');
 	request.onsuccess = function (event) {
@@ -148,11 +154,23 @@
 		let table = document.createElement("table");
 		table.setAttribute("id", "tabelkaa")
 		let row = document.createElement("tr");
-		let headers = ["imie", "email", "kod pocztowy", "numer nip", "numer dowodu", "numer telefonu"];
+		let headers = new Map();
+		headers.set("name", "imie");
+		headers.set("email", "email");
+		headers.set("kod_pocztowy", "kod pocztowy");
+		headers.set("numer_nip", "numer nip");
+		headers.set("numer_dowodu", "numer dowodu");
+		headers.set("numer_telefonu", "numer telefonu");
 
-		for (var i = 0; i < headers.length; i++) {
+		let headersText = []
+		let filters = getFilters();
+		for (let i = 0; i < filters.length; i++) {
+			headersText.push(headers.get(filters[i]));
+		}
+
+		for (var i = 0; i < headersText.length; i++) {
 			var th = document.createElement('th');
-			var content = document.createTextNode(headers[i]);
+			var content = document.createTextNode(headersText[i]);
 			th.appendChild(content);
 			row.appendChild(th);
 		}
@@ -181,18 +199,34 @@
 		}
 	}
 
+	function getFilters() {
+		let filterDiv = document.getElementById("filters");
+		let filters = filterDiv.getElementsByTagName("input");
+		selectedFilters = [];
+		for (let i = 0; i < filters.length; i++) {
+			if (filters[i].checked == true) {
+				selectedFilters.push(filters[i].value);
+			}
+		}
+		return selectedFilters;
+	}
 
-	async function list() {
+	function list() {
 		defineTable();
 		let tx = db.transaction('client');
 		let clientStore = tx.objectStore('client');
 		const parent = document.getElementById("listElem");
+		let filters = getFilters();
+
 		clientStore.openCursor().onsuccess = function (event) {
 			var res = event.target.result;
 			if (event.target.result) {
-				let clientData = [res.value.name, res.value.email, res.value.kod_pocztowy, res.value.numer_nip, res.value.numer_dowodu, res.value.numer_telefonu];
-
-				// console.log(res);	
+				console.log(filters)
+				// let clientData = [res.value.name, res.value.email, res.value.kod_pocztowy, res.value.numer_nip, res.value.numer_dowodu, res.value.numer_telefonu];
+				let clientData = [];
+				for (let i = 0; i < filters.length; i++) {
+					clientData.push(res.value[filters[i]]);
+				}
 				let tr = document.createElement('tr');
 				for (let i = 0; i < clientData.length; i++) {
 
@@ -210,19 +244,23 @@
 						}
 					});
 				}
-				parent.firstChild.appendChild(tr);
-				var td = document.createElement('td');
-				td.setAttribute("cliendId", res.key);
-				var button = document.createElement('button');
-				button.appendChild(document.createTextNode("Usuń"));
-				td.appendChild(button);
-				tr.appendChild(td);
-				button.addEventListener('click', (eve) => {
-					deleteOneClient(td.getAttribute("cliendId"));
-					let tr = td.parentNode;
-					let table = tr.parentNode;
-					table.removeChild(tr);
-				});
+				console.log(parent.firstChild);
+				console.log(document.getElementById("tabelkaa").firstChild.childElementCount);
+				if (document.getElementById("tabelkaa").firstChild.childElementCount > 0) {
+					parent.firstChild.appendChild(tr);
+					var td = document.createElement('td');
+					td.setAttribute("cliendId", res.key);
+					var button = document.createElement('button');
+					button.appendChild(document.createTextNode("Usuń"));
+					td.appendChild(button);
+					tr.appendChild(td);
+					button.addEventListener('click', (eve) => {
+						deleteOneClient(td.getAttribute("cliendId"));
+						let tr = td.parentNode;
+						let table = tr.parentNode;
+						table.removeChild(tr);
+					});
+				}
 			}
 			if (res != null) {
 				res.continue();
@@ -259,7 +297,6 @@
 				numer_dowodu: document.getElementById("numer_dowodu").value,
 				numer_telefonu: document.getElementById("numer_telefonu").value
 			});
-		// console.log("dodalem");
 		list();
 
 	}
