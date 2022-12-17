@@ -183,10 +183,28 @@
 		let removed = objectStore.delete(Number(key));
 	}
 
+	function validateField(field, value){
+		if(field=="name"){
+			
+		}else if(field=="email"){
+
+		}else if(field=="kod_pocztowy"){
+			
+		}else if(field=="numer_nip"){
+			
+		}else if(field=="numer_dowodu"){
+			
+		}else if(field=="numer_telefonu"){
+			
+		}
+	}
+
 	function updateClientData(key, field, value) {
 		let objectStore = db.transaction("client", "readwrite").objectStore("client");
 		let request = objectStore.get(Number(key));
 
+		validateField(field,value);
+		
 		request.onsuccess = () => {
 			let clientData = request.result;
 			if (clientData == undefined) {
