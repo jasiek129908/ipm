@@ -218,13 +218,14 @@
 		return false;
 	}
 
-	function updateClientData(el,key, field, value) {
+	function updateClientData(el, key, field, value) {
 		let objectStore = db.transaction("client", "readwrite").objectStore("client");
 		let request = objectStore.get(Number(key));
-
 		if(validateField(field,value)==false){
-			console.log(el);
-			alert("Wartosc nie spelnia wymagan!");
+			request.onsuccess = () => {
+				el.innerText= request.result[field];
+				alert("Wartosc nie spelnia wymagan!");
+			}			
 			return;
 		}
 		
