@@ -185,11 +185,10 @@
 
 	function validateField(field, value){
 		if(field=="name"){
-			if(value.match(/^[a-z]{2,}\s[a-z]{2,}/i)){
-				console.log("przechodze");
-				console.log(field,value);
+			if(value.match(/[A-Za-z]+\s[A-Za-z]+$/)){
+				return true;
 			}
-			console.log('asda');
+			console.log('wartosc pola: '+field+" nie przechodzi walidacji");
 		}else if(field=="email"){
 
 		}else if(field=="kod_pocztowy"){
@@ -201,13 +200,16 @@
 		}else if(field=="numer_telefonu"){
 			
 		}
+		return false;
 	}
 
 	function updateClientData(key, field, value) {
 		let objectStore = db.transaction("client", "readwrite").objectStore("client");
 		let request = objectStore.get(Number(key));
 
-		validateField(field,value);
+		if(validateField(field,value)==false){
+			return;
+		}
 		
 		request.onsuccess = () => {
 			let clientData = request.result;
