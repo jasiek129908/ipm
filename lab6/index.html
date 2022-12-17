@@ -185,7 +185,11 @@
 
 	function validateField(field, value){
 		if(field=="name"){
-			
+			if(value.match(/^[a-z]{2,}\s[a-z]{2,}/i)){
+				console.log("przechodze");
+				console.log(field,value);
+			}
+			console.log('asda');
 		}else if(field=="email"){
 
 		}else if(field=="kod_pocztowy"){
