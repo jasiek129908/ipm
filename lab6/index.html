@@ -188,26 +188,43 @@
 			if(value.match(/[A-Za-z]+\s[A-Za-z]+$/)){
 				return true;
 			}
-			console.log('wartosc pola: '+field+" nie przechodzi walidacji");
 		}else if(field=="email"){
-
+			if(value.match(/^\S+@\S+\.\S+$/)){
+				console.log('email git');
+				return true;
+			}
 		}else if(field=="kod_pocztowy"){
-			
+			if(value.match(/^[0-9]{2}-[0-9]{3}$/)){
+				console.log('kod_pocztowy');
+				return true;
+			}
 		}else if(field=="numer_nip"){
-			
+			if(value.match(/^[0-9]{3}-[0-9]{3}-[0-9]{2}-[0-9]{2}$/)){
+				console.log('numer_nip');
+				return true;
+			}
 		}else if(field=="numer_dowodu"){
-			
+			if(value.match(/^[A-Z]{3}[0-9]{6}$/)){
+				console.log('numer_dowodu');
+				return true;
+			}
 		}else if(field=="numer_telefonu"){
-			
+			if(value.match(/^[0-9]{9}$/)){
+				console.log('numer_telefonu');
+				return true;
+			}
 		}
+		console.log("wartosc pola: " + field + " nie przechodzi walidacji");
 		return false;
 	}
 
-	function updateClientData(key, field, value) {
+	function updateClientData(el,key, field, value) {
 		let objectStore = db.transaction("client", "readwrite").objectStore("client");
 		let request = objectStore.get(Number(key));
 
 		if(validateField(field,value)==false){
+			console.log(el);
+			alert("Wartosc nie spelnia wymagan!");
 			return;
 		}
 		
@@ -274,7 +291,7 @@
 
 					td.addEventListener('focusout', (eve) => {
 						if (td.getAttribute("cliendId") != undefined && td.getAttribute("columnNameInDb") != undefined && eve.target.innerText.length > 0) {
-							updateClientData(td.getAttribute("cliendId"), td.getAttribute("columnNameInDb"), eve.target.innerText);
+							updateClientData(td,td.getAttribute("cliendId"), td.getAttribute("columnNameInDb"), eve.target.innerText);
 						}
 					});
 				}
